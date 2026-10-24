@@ -44,6 +44,7 @@ prepare: build/.container
 	$(RUN) scripts/prepare.sh
 
 image: prepare
+	rm -rf $(TARGET_BIN)
 	$(RUN) make -C $(BUILD) -j$(JOBS) download world
 	rm -rf $(OUT) && mkdir -p $(OUT)
 	cp $(TARGET_BIN)/*-hapcan_interface-squashfs-sysupgrade.bin \

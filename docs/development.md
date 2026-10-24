@@ -112,7 +112,9 @@ git add openwrt patches && git commit -m "Update OpenWrt to v25.12.N"
 
 1. Update the version of changed packages (`PKG_VERSION`/`PKG_RELEASE` in `feed/*/Makefile`).
 2. Tag the repository (`git tag -a vX.Y.Z`). The build embeds `git describe` as
-   the firmware version (`/etc/openwrt_release`, `DISTRIB_REVISION`).
+   the firmware version: `DISTRIB_DESCRIPTION` in `/etc/openwrt_release` and the
+   login banner, e.g. `OpenWrt 25.12.6 hapcan-v1.0.0`. `DISTRIB_REVISION` stays the
+   upstream OpenWrt revision.
 3. `make clean image`, run the test bench, and attach `out/*` to a GitHub release.
 
 ## Upstreaming
