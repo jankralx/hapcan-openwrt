@@ -60,6 +60,25 @@ The default configuration:
 - MQTT and the MQTT gateway disabled. Set `enableMQTT`, `mqttBroker` and the
   topics to use them.
 
+### HAPCAN Programmer over MQTT
+
+HAPCAN Programmer can use an MQTT broker instead of TCP. It publishes frames
+to one topic and reads frames from another, in the same JSON format as hmsg
+raw frames. Programming needs the module responses, which are system frames,
+so enable `rawHapcanPubSystem` as well. Example for the programmer topics
+`hapcan/raw/pc` (publish) and `hapcan/raw/bus` (subscribe):
+
+```json
+"enableMQTT": true,
+"mqttBroker": "tcp://192.168.1.10:1883",
+"subscribeTopics": ["hapcan/raw/pc"],
+"enableRawHapcan": true,
+"rawHapcanPubAll": true,
+"rawHapcanPubSystem": true,
+"rawHapcanPubTopic": "hapcan/raw/bus",
+"rawHapcanSubTopics": ["hapcan/raw/pc"],
+```
+
 Logs: `logread -e hmsg`.
 
 ## CAN bus
@@ -67,7 +86,7 @@ Logs: `logread -e hmsg`.
 The STM32 on the board runs [CANable](https://github.com/normaldotcom/canable-fw) slcan firmware and
 appears as `/dev/ttyACM0`. The `slcand` service turns it into the network
 interface `can0` at 125 kbit/s (HAPCAN bus speed). A hotplug script brings
-`can0` up and restarts hmsg whenever the CANable appears.
+`can0` up whenever the CANable appears, and hmsg reconnects to it by itself.
 
 Useful commands:
 

@@ -1,8 +1,6 @@
-# slcand creates can0 down: bring it up, and restart hmsg because it opens
-# can0 only at start and does not reconnect when the CANable comes back
+# slcand creates can0 down, bring it up. hmsg reconnects to it by itself.
 
 [ "$INTERFACE" = "can0" ] && [ "$ACTION" = "add" ] || exit 0
 
 logger -t can "bringing up $INTERFACE"
 ip link set "$INTERFACE" up
-/etc/init.d/hmsg enabled && /etc/init.d/hmsg restart

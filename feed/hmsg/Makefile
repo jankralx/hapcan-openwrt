@@ -1,8 +1,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hmsg
-PKG_VERSION:=1.0.0
-PKG_RELEASE:=4
+PKG_VERSION:=1.13.0
+PKG_RELEASE:=1
 
 PKG_MAINTAINER:=Jan Kral <jankralx@gmail.com>
 PKG_LICENSE:=GPL-3.0-only

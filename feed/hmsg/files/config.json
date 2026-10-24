@@ -12,6 +12,7 @@
 "subscribeTopics": [],
 "enableRawHapcan": false,
 "rawHapcanPubAll": false,
+"rawHapcanPubSystem": false,
 "rawHapcanPubTopic": "hapcan/RAW",
 "rawHapcanSubTopics": [],
 "rawHapcanPubModules": [],

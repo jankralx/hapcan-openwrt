@@ -27,7 +27,7 @@ Board design and STM32 firmware: the `hardware/` submodule
 | Component | Package | Role |
 |---|---|---|
 | `slcand` service | `hapcan-base`, `canutils-slcand` | attaches `/dev/ttyACM0` as `can0` (125 kbit/s), restarts when the CANable reappears |
-| `can0` hotplug | `hapcan-base` | brings `can0` up, restarts hmsg (hmsg opens `can0` only at start) |
+| `can0` hotplug | `hapcan-base` | brings `can0` up |
 | hmsg | `hmsg` | `can0` ⇄ TCP server (port 1001, HAPCAN Ethernet protocol) ⇄ MQTT |
 | umdns | `umdns` | announces `hapcan-xxxx.local` and `_hapcan._tcp` |
 | NTP → RTC hotplug | `hapcan-base` | writes NTP time to the BQ32000 |
@@ -38,9 +38,10 @@ Boot sequence for the CAN path:
 
 1. USB enumerates the CANable as `/dev/ttyACM0`. The tty hotplug script (or the
    `slcand` init script at boot) starts `slcand`.
-2. `slcand` creates `can0`. The net hotplug script brings it up and
-   restarts hmsg.
-3. hmsg opens `can0` and starts the TCP server and, if enabled, MQTT.
+2. `slcand` creates `can0`. The net hotplug script brings it up.
+3. hmsg retries opening `can0` every second until it succeeds, and does the
+   same after a read or write error (e.g. when the CANable is unplugged).
+   It does not need a restart when `can0` comes and goes.
 
 The DHCP and DNS servers (`dnsmasq`, `odhcpd`) are left out of the image,
 because the interface is a client on someone else's network. Wi-Fi drivers

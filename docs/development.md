@@ -124,11 +124,9 @@ git add openwrt patches && git commit -m "Update OpenWrt to v25.12.N"
 | `kmod-rtc-bq32k`, `kmod-iio-mcp3422` | openwrt/openwrt | merged, in 25.12 |
 | `paho-mqtt-c` package | openwrt/packages | candidate, not yet submitted |
 | board support patch | openwrt/openwrt | possible once the hardware is publicly available |
-| hmsg build fixes, CAN reconnect | alcp1/HMSG | candidates |
+| hmsg build fixes, `rawHapcanPubSystem` | alcp1/HMSG | candidates |
 
 ## Known limitations
 
-- hmsg opens `can0` only at start and does not reconnect. The `can0` hotplug
-  script restarts hmsg as a workaround. A reconnect inside hmsg would be better.
 - Kernel module packages from the official OpenWrt repositories do not match
   this kernel. Build needed modules with the image.
