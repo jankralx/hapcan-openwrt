@@ -1,0 +1,104 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jan Kral <jankralx@gmail.com>
+Date: Sat, 24 Oct 2026 19:50:45 +0200
+Subject: [PATCH] ramips: add support for HAPCAN Ethernet Interface
+
+The HAPCAN Ethernet Interface is a carrier board for the Hi-Link
+HLK-7628N module that bridges a HAPCAN (CAN) bus to Ethernet.
+
+Hardware on top of the HLK-7628N:
+- STM32F072 running CANable (slcan) firmware on USB (ttyACM0)
+- TI BQ32000 RTC on I2C (0x68)
+- Microchip MCP3422 ADC on I2C (0x6e) measuring bus and battery voltage
+
+The single Ethernet port is LAN. The module LED shows Ethernet
+activity because the board does not use Wi-Fi.
+---
+ .../ramips/dts/mt7628an_hapcan_interface.dts  | 28 +++++++++++++++++++
+ target/linux/ramips/image/mt76x8.mk           | 10 +++++++
+ .../mt76x8/base-files/etc/board.d/01_leds     |  3 ++
+ .../mt76x8/base-files/etc/board.d/02_network  |  1 +
+ 4 files changed, 42 insertions(+)
+ create mode 100644 target/linux/ramips/dts/mt7628an_hapcan_interface.dts
+
+diff --git a/target/linux/ramips/dts/mt7628an_hapcan_interface.dts b/target/linux/ramips/dts/mt7628an_hapcan_interface.dts
+new file mode 100644
+index 0000000000..70d122148d
+--- /dev/null
++++ b/target/linux/ramips/dts/mt7628an_hapcan_interface.dts
+@@ -0,0 +1,28 @@
++// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
++
++#include "mt7628an_hilink_hlk-7628n.dts"
++
++/ {
++	compatible = "hapcan,interface", "hilink,hlk-7628n", "mediatek,mt7628an-soc";
++	model = "HAPCAN Ethernet Interface";
++};
++
++&state_default {
++	/* The I2C pins are used as I2C here, not as GPIO like on the HLK-7628N */
++	/delete-node/ gpio;
++};
++
++&i2c {
++	status = "okay";
++
++	rtc@68 {
++		compatible = "ti,bq32000";
++		reg = <0x68>;
++	};
++
++	adc@6e {
++		compatible = "microchip,mcp3422";
++		reg = <0x6e>;
++		#io-channel-cells = <1>;
++	};
++};
+diff --git a/target/linux/ramips/image/mt76x8.mk b/target/linux/ramips/image/mt76x8.mk
+index a079a216a8..d7f59610dc 100644
+--- a/target/linux/ramips/image/mt76x8.mk
++++ b/target/linux/ramips/image/mt76x8.mk
+@@ -348,6 +348,16 @@ define Device/hak5_wifi-pineapple-mk7
+ endef
+ TARGET_DEVICES += hak5_wifi-pineapple-mk7
+ 
++define Device/hapcan_interface
++  IMAGE_SIZE := 32448k
++  DEVICE_VENDOR := HAPCAN
++  DEVICE_MODEL := Ethernet Interface
++  SUPPORTED_DEVICES += hilink,hlk-7628n
++  DEVICE_PACKAGES := kmod-usb2 kmod-usb-ohci kmod-usb-acm kmod-can kmod-can-slcan \
++	kmod-i2c-mt7628 kmod-iio-mcp3422 kmod-rtc-bq32k
++endef
++TARGET_DEVICES += hapcan_interface
++
+ define Device/hilink_hlk-7628n
+   IMAGE_SIZE := 32448k
+   DEVICE_VENDOR := HILINK
+diff --git a/target/linux/ramips/mt76x8/base-files/etc/board.d/01_leds b/target/linux/ramips/mt76x8/base-files/etc/board.d/01_leds
+index 8e4c85ef62..36e94d527a 100644
+--- a/target/linux/ramips/mt76x8/base-files/etc/board.d/01_leds
++++ b/target/linux/ramips/mt76x8/base-files/etc/board.d/01_leds
+@@ -50,6 +50,9 @@ glinet,gl-mt300n-v2)
+ 	ucidef_set_led_netdev "wifi_led" "wifi" "red:wlan" "wlan0"
+ 	ucidef_set_led_switch "wan" "wan" "green:wan" "switch0" "0x1"
+ 	;;
++hapcan,interface)
++	ucidef_set_led_netdev "lan" "lan" "green:wlan" "eth0"
++	;;
+ hilink,hlk-7628n|\
+ skylab,skw92a)
+ 	ucidef_set_led_netdev "wifi_led" "wifi" "green:wlan" "wlan0"
+diff --git a/target/linux/ramips/mt76x8/base-files/etc/board.d/02_network b/target/linux/ramips/mt76x8/base-files/etc/board.d/02_network
+index c25eb3db33..35726bf323 100644
+--- a/target/linux/ramips/mt76x8/base-files/etc/board.d/02_network
++++ b/target/linux/ramips/mt76x8/base-files/etc/board.d/02_network
+@@ -17,6 +17,7 @@ ramips_setup_interfaces()
+ 	glinet,microuter-n300|\
+ 	glinet,vixmini|\
+ 	hak5,wifi-pineapple-mk7|\
++	hapcan,interface|\
+ 	hiwifi,hc5611|\
+ 	mediatek,linkit-smart-7688|\
+ 	minew,g1-c|\

@@ -1,0 +1,22 @@
+#!/bin/sh
+# Defaults: unique hostname (hapcan-<last 4 MAC digits>, announced over mDNS
+# as <hostname>.local) and a DHCP client on the LAN bridge next to the static
+# fallback address. Runs again after each sysupgrade, so it only fills in
+# what is still at the OpenWrt default.
+
+if [ "$(uci -q get system.@system[0].hostname)" = "OpenWrt" ]; then
+	suffix=$(tr -d ':' < /sys/class/net/eth0/address | tail -c 5)
+	uci set system.@system[0].hostname="hapcan-$suffix"
+	uci commit system
+fi
+
+if ! uci -q get network.lan_dhcp > /dev/null; then
+	uci -q batch <<-EOT
+		set network.lan_dhcp=interface
+		set network.lan_dhcp.device='br-lan'
+		set network.lan_dhcp.proto='dhcp'
+		commit network
+	EOT
+fi
+
+exit 0

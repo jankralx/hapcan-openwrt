@@ -1,0 +1,28 @@
+{
+"GeneralSettings":
+{
+"computerID1": 254,
+"computerID2": 254,
+"enableRTCFrame": true,
+"enableSocketServer": true,
+"socketServerPort": "1001",
+"enableMQTT": false,
+"mqttBroker": "192.168.1.2",
+"mqttClientID": "hapcan",
+"subscribeTopics": [],
+"enableRawHapcan": false,
+"rawHapcanPubAll": false,
+"rawHapcanPubTopic": "hapcan/RAW",
+"rawHapcanSubTopics": [],
+"rawHapcanPubModules": [],
+"enableHapcanStatus": false,
+"statusPubTopic": "hapcan/Status",
+"statusSubTopic": "hapcan/Command/Status",
+"enableGateway": false
+},
+"HAPCANRelays": [],
+"HAPCANButtons": [],
+"HAPCANRGBs": [],
+"RGBWs": [],
+"TIMs": []
+}

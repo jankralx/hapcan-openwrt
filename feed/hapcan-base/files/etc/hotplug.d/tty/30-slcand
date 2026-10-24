@@ -1,0 +1,5 @@
+# (Re)start slcand when the CANable appears, also when it is plugged late
+
+[ "$DEVICENAME" = "ttyACM0" ] && [ "$ACTION" = "add" ] || exit 0
+
+/etc/init.d/slcand enabled && /etc/init.d/slcand restart

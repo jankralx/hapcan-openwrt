@@ -1,0 +1,12 @@
+# OpenWrt build environment (host packages from the OpenWrt developer guide)
+FROM docker.io/library/debian:12
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+	build-essential clang flex bison g++ gawk gcc-multilib g++-multilib \
+	gettext git libncurses-dev libssl-dev python3-setuptools python3-dev \
+	rsync swig unzip zlib1g-dev file wget curl ca-certificates time \
+	xz-utils zstd bzip2 patch perl python3 less nano \
+	&& rm -rf /var/lib/apt/lists/*
+
+# Git refuses repos owned by another uid; the source tree is bind-mounted
+RUN git config --system --add safe.directory '*'

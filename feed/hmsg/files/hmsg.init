@@ -1,0 +1,22 @@
+#!/bin/sh /etc/rc.common
+
+START=95
+USE_PROCD=1
+
+CONFIG=/etc/hmsg/config.json
+
+start_service() {
+	procd_open_instance
+	procd_set_param command /usr/bin/hmsg
+	procd_set_param respawn
+	procd_set_param stdout 1
+	procd_set_param stderr 1
+
+	# Announce the TCP server over mDNS so clients can find the interface.
+	# Avahi only resolves services that have a TXT record.
+	if [ "$(jsonfilter -i "$CONFIG" -e '@.GeneralSettings.enableSocketServer')" = "true" ]; then
+		port=$(jsonfilter -i "$CONFIG" -e '@.GeneralSettings.socketServerPort')
+		[ -n "$port" ] && procd_add_mdns "hapcan" "tcp" "$port" "protocol=hapcan-ethernet"
+	fi
+	procd_close_instance
+}
