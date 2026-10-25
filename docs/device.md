@@ -148,5 +148,17 @@ the image instead (`config/hapcan.diffconfig`).
   default settings at `192.168.168.100` and no services. `firstboot && reboot` resets
   all settings.
 - **Serial console**: UART0 of the HLK-7628N, 57600 baud 8N1.
-- **Broken image**: the HLK-7628N U-Boot offers loading an image over TFTP
-  from its serial console menu.
+- **Broken image**: the HLK-7628N U-Boot can write an image received over
+  TFTP, from its serial console menu. See the
+  [OpenWrt commit that added the HLK-7628N](https://github.com/openwrt/openwrt/commit/671c9d16e382)
+  for the procedure, and use `*-sysupgrade.bin` from this build as the image.
+- **Module does not start at all** (damaged U-Boot): rewrite the SPI flash
+  with a Raspberry Pi, see
+  [hilink_hlk-7628n_fw_recovery](https://github.com/jankralx/hilink_hlk-7628n_fw_recovery).
+
+### Modules delivered with Hi-Link firmware
+
+Some HLK-7628N modules come with Hi-Link's own firmware instead of OpenWrt.
+**Do not upload an OpenWrt image through the Hi-Link web update page.** On
+one module this overwrote the start of U-Boot and the module did not start
+again. Use the U-Boot TFTP menu instead, or the SPI procedure above.
