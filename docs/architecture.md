@@ -98,7 +98,7 @@ subnet. The subnet is unusual so that it rarely collides with home networks.
 ## History
 
 This repository replaces an earlier setup spread over several repositories,
-which are archived:
+which are no longer maintained:
 
 - `fatalwir/openwrt` (branches `hapcan`, `k01_hapcan_podman`): OpenWrt 24.10 fork with the board
   support, the kernel module packages and a podman environment,
