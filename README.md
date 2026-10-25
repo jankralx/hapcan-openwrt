@@ -63,3 +63,10 @@ Then connect HAPCAN Programmer to `hapcan-xxxx.local`, port 1001.
 - [HAPCAN-Ethernet_interface](https://github.com/fatalwir/HAPCAN-Ethernet_interface): board design (KiCad) and STM32 firmware
 - [HMSG](https://github.com/jankralx/HMSG-openwrt): HAPCAN / MQTT / socket server gateway, forked from [alcp1/HMSG](https://github.com/alcp1/HMSG)
 - HAPCAN Programmer: desktop tool to configure HAPCAN modules, connects to TCP port 1001
+
+## License
+
+This repository is licensed under the [GNU General Public License v2.0](LICENSE),
+the same as OpenWrt. The submodules have their own licenses: `hmsg/` and
+`hardware/` are GPL-3.0, `openwrt/` is GPL-2.0. Packages built from `feed/`
+declare their license in `PKG_LICENSE`.
