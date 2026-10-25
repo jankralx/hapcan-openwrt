@@ -4,7 +4,7 @@
 [submodule "hmsg"]
 	path = hmsg
 	url = https://github.com/jankralx/HMSG-openwrt.git
-	branch = k00_main
+	branch = openwrt
 [submodule "hardware"]
 	path = hardware
 	url = https://github.com/fatalwir/HAPCAN-Ethernet_interface.git
