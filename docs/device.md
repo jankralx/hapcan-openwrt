@@ -144,7 +144,7 @@ the image instead (`config/hapcan.diffconfig`).
 ## Recovery
 
 - **Failsafe mode**: press `f` + Enter on the serial console when it says
-  so during boot (or the reset button on GPIO 38, if fitted). The interface then boots with
+  so during boot. The board has no reset button. The interface then boots with
   default settings at `192.168.168.100` and no services. `firstboot && reboot` resets
   all settings.
 - **Serial console**: UART0 of the HLK-7628N, 57600 baud 8N1.
