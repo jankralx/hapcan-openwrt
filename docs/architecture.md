@@ -56,7 +56,7 @@ feed/ ────────────────────────�
 hmsg/ (submodule) ◀── feed/hmsg/Makefile copies the source │
 config/hapcan.diffconfig ──────────── .config ────▶       │
                                                           ▼
-                                       make world (in podman container)
+                                       make world (in Docker/podman container)
                                                           ▼
                                        out/*-sysupgrade.bin, *.apk
 ```

@@ -22,9 +22,19 @@ TARGET_BIN := $(BUILD)/bin/targets/ramips/mt76x8
 FEED_BIN := $(BUILD)/bin/packages/mipsel_24kc/hapcan
 OUT := out
 
+# Container engine: docker if installed, else podman. Override with ENGINE=...
+ENGINE ?= $(shell command -v docker >/dev/null && echo docker || echo podman)
+# The build must run as the calling user so that files in the tree stay owned
+# by them. Rootless podman (also when installed as "docker") needs keep-id,
+# Docker runs the container as the host uid directly.
+ifeq ($(shell $(ENGINE) --version 2>/dev/null | grep -qi podman && echo podman),podman)
+USERFLAGS := --userns=keep-id
+else
+USERFLAGS := --user $(shell id -u):$(shell id -g) -e HOME=/tmp
+endif
 CONTAINER := hapcan-openwrt-build
 TTYFLAG := $(shell [ -t 0 ] && echo -t)
-RUN := podman run --rm -i $(TTYFLAG) --userns=keep-id --security-opt label=disable \
+RUN := $(ENGINE) run --rm -i $(TTYFLAG) $(USERFLAGS) --security-opt label=disable \
 	-v $(REPO):$(REPO) -w $(REPO) $(CONTAINER)
 
 SSH := ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$(HOST)
@@ -35,12 +45,12 @@ SCP := scp -O -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
 
 all: image
 
-container: build/.container
-build/.container: container/Containerfile
-	podman build -t $(CONTAINER) container
+container: build/.container-$(lastword $(ENGINE))
+build/.container-$(lastword $(ENGINE)): container/Containerfile
+	$(ENGINE) build -t $(CONTAINER) -f container/Containerfile container
 	@mkdir -p build && touch $@
 
-prepare: build/.container
+prepare: build/.container-$(lastword $(ENGINE))
 	$(RUN) scripts/prepare.sh
 
 image: prepare
@@ -63,7 +73,7 @@ menuconfig: prepare
 diffconfig:
 	@$(RUN) sh -c 'cd $(BUILD) && ./scripts/diffconfig.sh'
 
-shell: build/.container
+shell: build/.container-$(lastword $(ENGINE))
 	$(RUN) bash
 
 deploy:

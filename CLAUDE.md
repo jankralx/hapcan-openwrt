@@ -22,7 +22,7 @@ bridging a HAPCAN CAN bus to Ethernet). Read `README.md`, then
 ## Commands
 
 ```sh
-make image                     # full build in podman → out/
+make image                     # full build in docker/podman → out/
 make packages                  # only hmsg + hapcan-base
 make deploy                    # sysupgrade $(HOST) with out/ image
 make deploy-hmsg               # install new hmsg without reflashing

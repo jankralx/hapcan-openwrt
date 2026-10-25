@@ -2,13 +2,17 @@
 
 ## Requirements
 
-- Linux with podman (rootless works) and git
+- Linux with Docker or podman (rootless podman works) and git
 - about 15 GB of disk for a build tree, 4 GB RAM or more
 - first build: 15–60 minutes depending on CPU cores (toolchain included),
   later builds a few minutes
 
 The build runs in a Debian container (`container/Containerfile`), so the host
-needs no OpenWrt build dependencies. The repository is mounted at the same
+needs no OpenWrt build dependencies. The Makefile uses `docker` when it is
+installed and `podman` otherwise; choose explicitly with `ENGINE=podman`
+(also in `local.mk`). With Docker, your user must be allowed to run it
+(member of the `docker` group). The container runs as your uid, so files in
+the tree stay owned by you. Rootless Docker is not supported. The repository is mounted at the same
 path inside the container, so paths in logs match the host.
 
 ## Make targets
@@ -28,7 +32,7 @@ path inside the container, so paths in logs match the host.
 | `make flash-stm32` | flash the STM32 CANable firmware over SWD (ST-Link, STM32CubeProgrammer) |
 | `make clean` | remove `build/` and `out/` |
 
-`HOST`, `TTY`, `HAPCAN_TTY`, `JOBS` and `SYSUPGRADE_FLAGS` can be set on the
+`HOST`, `TTY`, `HAPCAN_TTY`, `JOBS`, `ENGINE` and `SYSUPGRADE_FLAGS` can be set on the
 command line or in `local.mk`, which is ignored by git. Keep anything specific
 to your setup (addresses, serial port paths) there, not in tracked files:
 

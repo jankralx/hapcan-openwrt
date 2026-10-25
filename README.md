@@ -18,7 +18,7 @@ Both are provided by [hmsg](https://github.com/jankralx/HMSG-openwrt).
 
 ## Quick start
 
-Build (needs podman, git and about 15 GB of disk):
+Build (needs Docker or podman, git and about 15 GB of disk):
 
 ```sh
 git clone --recurse-submodules https://github.com/jankralx/hapcan-openwrt.git
